@@ -12,7 +12,8 @@ namespace WorkShop.Models
     {
         [DisplayName("訂單編號")]
         public int OrderID { get; set; }
-        
+
+        [DisplayName("需要日期")]
         public int CustomID { get; set; }
         
         public int EmployeeID { get; set; }
