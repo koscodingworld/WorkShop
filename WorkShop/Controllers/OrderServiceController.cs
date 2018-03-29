@@ -49,7 +49,7 @@ namespace WorkShop.Controllers
             return View(OrderSearchArgs);
         }
         [HttpPost()]
-        public ActionResult OrderSearch(OrderSearchArgs OrderSearchArgs)
+        public ActionResult OrderSearchResult(OrderSearchArgs OrderSearchArgs)
         {
 
             return View();
