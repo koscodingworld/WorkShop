@@ -51,8 +51,10 @@ namespace WorkShop.Controllers
         [HttpPost()]
         public ActionResult OrderSearchResult(OrderSearchArgs OrderSearchArgs)
         {
+            Order Order = new Order();
+            List<Order> OrdersList = Order.Initialize();
 
-            return View();
+            return View(OrdersList);
         }
     }
 }
