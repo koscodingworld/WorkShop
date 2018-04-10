@@ -110,9 +110,8 @@
     </Compile>
     <Compile Include="Models\Customers.cs" />
     <Compile Include="Models\Employees.cs" />
-    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Orders.cs" />
     <Compile Include="Models\OrderSearchArgs.cs" />
-    <Compile Include="Models\OrderService.cs" />
     <Compile Include="Models\Shippers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -127,6 +126,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\OrderService\OrderSearch.cshtml" />
     <Content Include="Views\OrderService\OrderSearchResult.cshtml" />
+    <Content Include="Views\OrderService\Index.cshtml" />
+    <Content Include="Views\OrderService\OrderInsert.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
