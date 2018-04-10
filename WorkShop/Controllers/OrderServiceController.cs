@@ -9,52 +9,46 @@ using WorkShop.Models;
 
 namespace WorkShop.Controllers
 {
+    
     public class OrderServiceController : Controller
     {
-        // GET: OrderSearch
-        public ActionResult OrderSearch()
-        {
-            Order Order = new Order();
-            IList<Order> OrderList = Order.Initialize();
+        public static IList<Customers> CustomersList;
+        public static IList<Employees> EmployeesList;
+        public static IList<Orders> OrdersList;
+        public static IList<Shippers> ShippersList;
+
+        public ActionResult Index() {
+            Customers Customers = new Customers();
+            CustomersList = Customers.Initialize();
 
             Employees Employees = new Employees();
-            IList<Employees> EmployeesList = Employees.Initialize();
+            EmployeesList = Employees.Initialize();
+
+            Orders Order = new Orders();
+            OrdersList = Order.Initialize();
 
             Shippers Shippers = new Shippers();
-            IList<Shippers> ShippersList = Shippers.Initialize();
-
-            OrderSearchArgs OrderSearchArgs = new OrderSearchArgs();
+            ShippersList = Shippers.Initialize();
             
-            //list.Where(o => o.CustomName == "XXX").ToList(); => CustomID
-            List<SelectListItem> EmployeeListItem = new List<SelectListItem>();
-            foreach (Employees EmployeesData in EmployeesList) {
-                EmployeeListItem.Add(new SelectListItem() {
-                    Text = EmployeesData.FirstName + EmployeesData.LastName,
-                    Value = EmployeesData.EmployeeID.ToString()
-                });
-            }
-            ViewBag.EmployeeListItem = EmployeeListItem;
-
-            List<SelectListItem> ShipperListItem = new List<SelectListItem>();
-            foreach (Shippers ShippersData in ShippersList)
-            {
-                ShipperListItem.Add(new SelectListItem()
-                {
-                    Text = ShippersData.CompanyName,
-                    Value = ShippersData.ShipperID.ToString()
-                });
-            }
-            ViewBag.ShipperListItem = ShipperListItem;
-
-            return View(OrderSearchArgs);
-        }
-        [HttpPost()]
-        public ActionResult OrderSearchResult(OrderSearchArgs OrderSearchArgs)
-        {
-            Order Order = new Order();
-            List<Order> OrdersList = Order.Initialize();
-
             return View(OrdersList);
         }
-    }
+        public ActionResult OrderInsert()
+        {
+
+            return View();
+        }
+            // GET: OrderSearch
+            /*public ActionResult OrderSearch()
+            {
+
+            }*/
+            /*[HttpPost()]
+            public ActionResult OrderSearchResult(OrderSearchArgs OrderSearchArgs)
+            {
+                Orders Order = new Orders();
+                List<Orders> OrdersList = Order.Initialize();
+
+                return View(OrdersList);
+            }*/
+        }
 }
