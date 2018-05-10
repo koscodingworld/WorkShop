@@ -7,24 +7,21 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("新增訂單", "OrderInsert","Order")
 </p>
 <table class="table table-bordered">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CustomID)
+            @Html.DisplayNameFor(model => model.OrderID)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.OrderDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RequireDate)
+            @Html.DisplayNameFor(model => model.RequiredDate)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ShippedDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Freight)
         </th>
         <th></th><th></th>
     </tr>
@@ -32,25 +29,22 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.CustomID)
+            @Html.DisplayFor(modelItem => item.OrderID)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.OrderDate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RequireDate)
+            @Html.DisplayFor(modelItem => item.RequiredDate)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.ShippedDate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Freight)
+            @Html.ActionLink("修改", "OrderUpdatePage", new { id=item.OrderID })
         </td>
         <td>
-            @Html.ActionLink("編輯", "Edit", new { id=item.OrderID })
-        </td>
-        <td>
-            @Html.ActionLink("刪除", "Delete", new { id = item.OrderID })
+            @Html.ActionLink("刪除", "OrderDelete", new { id = item.OrderID }, new { onclick = "return confirm('您確定要刪除訂單編號：" + item.OrderID + "?');" })
         </td>
     </tr>
 }
