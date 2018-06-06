@@ -8,6 +8,7 @@ using System.ComponentModel;
 using WorkShop.Models.Service;
 using System.Data;
 using WorkShop.Models;
+using System.Web.Script.Serialization;
 
 namespace WorkShop.Controllers
 {
@@ -93,6 +94,21 @@ namespace WorkShop.Controllers
 
             }
             return RedirectToAction("Index");
+        }
+
+        public JsonResult OrderSearch() {
+            OrderService orderService = new OrderService();
+            DataSet orderDS = orderService.getAllData();
+            List<Orders> orderList = new List<Orders>();
+            orderList = orderDS.Tables[0].AsEnumerable().Select(
+                dataRow => new Orders()
+                {
+                    OrderID = dataRow.Field<int>("OrderID"),
+                    OrderDate = dataRow.Field<DateTime?>("OrderDate"),
+                    RequiredDate = dataRow.Field<DateTime?>("RequiredDate"),
+                    ShippedDate = dataRow.Field<DateTime?>("ShippedDate")
+                }).ToList();
+            return Json(orderList, JsonRequestBehavior.AllowGet);
         }
     }
 }
