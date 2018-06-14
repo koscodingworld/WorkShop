@@ -57,6 +57,31 @@
                         field: "ShippedDate",
                         title: "運輸日期",
                         template: "#= kendo.toString(kendo.parseDate(ShippedDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+                    }, {
+                        command: [
+                            {
+                                name: "編輯",
+                                click: function (e) {
+                                    e.preventDefault();
+                                    // e.target is the DOM element representing the button
+                                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                                    // get the data bound to the current table row
+                                    var data = this.dataItem(tr);
+                                    console.log(data.OrderID);
+                                }
+                            },
+                            {
+                                name: "刪除",
+                                click: function (e) {
+                                    e.preventDefault();
+                                    // e.target is the DOM element representing the button
+                                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                                    // get the data bound to the current table row
+                                    var data = this.dataItem(tr);
+                                    console.log(data.OrderID);
+                                }
+                            }
+                        ]
                     }]
                 })
             },
