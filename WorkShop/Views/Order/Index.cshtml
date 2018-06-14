@@ -4,16 +4,17 @@
 }
 <h2>Index</h2>
 <p>
-    @Html.ActionLink("新增訂單", "OrderInsert", "Order")
+    @Html.ActionLink("新增訂單", "OrderInsert", null, new { @class = "btn btn-info" })
+    @Html.ActionLink("查詢訂單資訊", "OrderSearch", null, new { @class = "btn btn-info" })
 </p>
 <table class="table table-bordered" id="kendoGrid"></table>
 <script>
     $(document).ready(function () {
         $.ajax({
-            url: "OrderSearch",
+            url: '@Url.Action("OrderSearch","Order")',
             type: 'get',
             success: function (response) {
-                $.each(response, function (index, value) {
+                /*$.each(response, function (index, value) {
                     if (response[index].OrderDate != null) {
                         var orderDate = new Date(parseInt(response[index].OrderDate.substr(6)));
                         response[index].OrderDate = orderDate.format("yyyy-mm-dd HH:MM:ss");
@@ -26,15 +27,14 @@
                         var shippedDate = new Date(parseInt(response[index].ShippedDate.substr(6)));
                         response[index].ShippedDate = shippedDate.format("yyyy-mm-dd HH:MM:ss");
                     }
-                    
-                });
+                });*/
                 $("#kendoGrid").kendoGrid({
                     dataSource: {
                         type: "json",
-                        data: response
+                        data: response,
+                          pageSize: 20
                     },
                     height: 550,
-                    pageSize: 20,
                     pageable: {
                         pageSizes: true
                     },
@@ -47,13 +47,16 @@
                         title: "訂單編號"
                     }, {
                         field: "OrderDate",
-                        title: "訂單日期"
+                        title: "訂單日期",
+                        template: "#= kendo.toString(kendo.parseDate(OrderDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
                     }, {
                         field: "RequiredDate",
-                        title: "需要日期"
+                        title: "需要日期",
+                        template: "#= kendo.toString(kendo.parseDate(RequiredDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
                     }, {
                         field: "ShippedDate",
-                        title: "運輸日期"
+                        title: "運輸日期",
+                        template: "#= kendo.toString(kendo.parseDate(ShippedDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
                     }]
                 })
             },
