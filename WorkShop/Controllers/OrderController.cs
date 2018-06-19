@@ -15,75 +15,64 @@ namespace WorkShop.Controllers
 
     public class OrderController : Controller
     {
+        //查詢頁面
         public ActionResult Index()
         {
-
-            OrderService orderService = new OrderService();
-            DataSet orderDS = orderService.getAllData();
-            List<Orders> orderList = new List<Orders>();
-            orderList = orderDS.Tables[0].AsEnumerable().Select(
-                dataRow => new Orders()
-                {
-                    OrderID = dataRow.Field<int>("OrderID"),
-                    OrderDate = dataRow.Field<DateTime?>("OrderDate"),
-                    RequiredDate = dataRow.Field<DateTime?>("RequiredDate"),
-                    ShippedDate = dataRow.Field<DateTime?>("ShippedDate")
-                }).ToList();
-            /*foreach (DataRow rows in orderDS.Tables[0].Rows) {
-                DateTime? date;
-                if (rows.ItemArray[3].ToString() != "")
-                {
-                    date = Convert.ToDateTime(rows.ItemArray[3]);
-                }
-                else
-                {
-                    date = null;
-                }
-                orderList.Add(new Orders() { 
-                    OrderID = (int)rows.ItemArray[0],
-                    OrderDate = Convert.ToDateTime(rows.ItemArray[1]),
-                    RequiredDate = Convert.ToDateTime(rows.ItemArray[2]),
-                    ShippedDate = date
-                });
-            }*/
-            return View(orderList);
-        }
-
-        [HttpGet]
-        public ActionResult OrderInsert()
-        {
-            CustomerService customerService = new CustomerService();
-            DataSet customerDS = customerService.getAllData();
-            List<SelectListItem> customersSelectItemList = new List<SelectListItem>();
-            customersSelectItemList = customerDS.Tables[0].AsEnumerable().Select(
-                dataRow => new SelectListItem()
-                {
-                    Text = dataRow.Field<String>("CompanyName"),
-                    Value = dataRow.Field<int>("CustomerID").ToString()
-                }).ToList();
-            ViewBag.customersSelectItemList = customersSelectItemList;
-
             EmployeeService employeeService = new EmployeeService();
-            DataSet employeeDS = employeeService.getAllData();
-            List<SelectListItem> employeesSelectItemList = new List<SelectListItem>();
-            employeesSelectItemList = employeeDS.Tables[0].AsEnumerable().Select(
-                dataRow => new SelectListItem()
+            List<Employees> employeesList = employeeService.getAllData();
+            List<SelectListItem> employeesSelectItemList = employeesList.Select(
+                m => new SelectListItem()
                 {
-                    Text = dataRow.Field<String>("FirstName") + dataRow.Field<String>("LastName"),
-                    Value = dataRow.Field<int>("EmployeeID").ToString()
+                    Text = m.FirstName + m.LastName,
+                    Value = m.FirstName + m.LastName
                 }).ToList();
             ViewBag.employeesSelectItemList = employeesSelectItemList;
 
             ShipperService shipperService = new ShipperService();
-            DataSet shipperDS = shipperService.getAllData();
-            List<SelectListItem> shippersSelectItemList = new List<SelectListItem>();
-            shippersSelectItemList = shipperDS.Tables[0].AsEnumerable().Select(
-                dataRow => new SelectListItem()
+            List<Shippers> shippersList = shipperService.getAllData();
+            List<SelectListItem> shippersSelectItemList = shippersList.Select(
+                m => new SelectListItem()
                 {
-                    Text = dataRow.Field<String>("CompanyName"),
-                    Value = dataRow.Field<int>("ShipperID").ToString()
+                    Text = m.CompanyName,
+                    Value = m.CompanyName
                 }).ToList();
             ViewBag.shippersSelectItemList = shippersSelectItemList;
+            return View();
+        }
+
+        //新增頁面
+        [HttpGet]
+        public ActionResult OrderInsert()
+        {
+            CustomerService customerService = new CustomerService();
+            List<Customers> customersList = customerService.getAllData();
+            List <SelectListItem> customersSelectItemList = customersList.Select(
+                m => new SelectListItem()
+                {
+                    Text = m.CompanyName,
+                    Value = "" + m.CustomerID
+                }).ToList();
+            ViewBag.customersSelectItemList = customersSelectItemList;
+
+            EmployeeService employeeService = new EmployeeService();
+            List<Employees> employeesList = employeeService.getAllData();
+            List<SelectListItem> employeesSelectItemList = employeesList.Select(
+                m => new SelectListItem()
+                {
+                    Text = m.FirstName + m.LastName,
+                    Value = "" + m.EmployeeID
+                }).ToList();
+            ViewBag.employeesSelectItemList = employeesSelectItemList;
+
+            ShipperService shipperService = new ShipperService();
+            List<Shippers> shippersList = shipperService.getAllData();
+            List<SelectListItem> shippersSelectItemList = shippersList.Select(
+                m => new SelectListItem()
+                {
+                    Text = m.CompanyName,
+                    Value = "" + m.ShipperID
+                }).ToList();
+            ViewBag.shippersSelectItemList = employeesSelectItemList;
 
             return View(new Orders());
         }
@@ -95,20 +84,68 @@ namespace WorkShop.Controllers
             }
             return RedirectToAction("Index");
         }
-
-        public JsonResult OrderSearch() {
+        [HttpPost]
+        public JsonResult OrderSearch(OrderSearchArgs orderSearchArgs) {
             OrderService orderService = new OrderService();
-            DataSet orderDS = orderService.getAllData();
-            List<Orders> orderList = new List<Orders>();
-            orderList = orderDS.Tables[0].AsEnumerable().Select(
-                dataRow => new Orders()
-                {
-                    OrderID = dataRow.Field<int>("OrderID"),
-                    OrderDate = dataRow.Field<DateTime?>("OrderDate"),
-                    RequiredDate = dataRow.Field<DateTime?>("RequiredDate"),
-                    ShippedDate = dataRow.Field<DateTime?>("ShippedDate")
+            List<Orders> orderList = orderService.getAllData();
+            /**/
+            IEnumerable<Orders> orderResult = orderList;
+            // 訂單編號
+            if (orderSearchArgs.OrderID.HasValue)
+            {
+                orderResult = orderResult.Where(m => m.OrderID == orderSearchArgs.OrderID.Value);
+            }
+            // 負責員工
+            if (!string.IsNullOrWhiteSpace(orderSearchArgs.EmployeeName))
+            {
+                EmployeeService employeeService = new EmployeeService();
+                orderResult =
+                    orderResult.Where(
+                        m => employeeService.GetEmployeeName(m.EmployeeID).Contains(orderSearchArgs.EmployeeName)
+                    );
+            }
+            // 訂購日期
+            if (orderSearchArgs.OrderDate.HasValue)
+            {
+                orderResult = orderResult.Where(m => m.OrderDate == orderSearchArgs.OrderDate.Value);
+            }
+            // 需要日期
+            if (orderSearchArgs.RequiredDate.HasValue)
+            {
+                orderResult = orderResult.Where(m => m.RequiredDate == orderSearchArgs.RequiredDate.Value);
+            }
+            // 出貨日期
+            if (orderSearchArgs.ShippedDate.HasValue)
+            {
+                orderResult = orderResult.Where(m => m.ShippedDate == orderSearchArgs.ShippedDate.Value);
+            }
+            // 運輸公司
+            if (!string.IsNullOrWhiteSpace(orderSearchArgs.CompanyName))
+            {
+                ShipperService shipperService = new ShipperService();
+                orderResult =
+                    orderResult.Where(
+                        m => shipperService.GetCompanyName(m.ShipperID).Contains(orderSearchArgs.CompanyName)
+                    );
+            }
+            EmployeeService employeesService = new EmployeeService();
+            List<Employees> employeeList = employeesService.getAllData();
+            ShipperService shippersService = new ShipperService();
+            List<Shippers> ShipperList = shippersService.getAllData();
+            List<OrderSearchArgs> orderSearchArgsList = orderResult.Select(
+                m => new OrderSearchArgs{
+                    OrderID = m.OrderID,
+                    EmployeeName = employeeList.Single(empM => empM.EmployeeID == m.EmployeeID).FirstName + employeeList.Single(empM => empM.EmployeeID == m.EmployeeID).LastName,
+                    OrderDate = m.OrderDate,
+                    RequiredDate = m.RequiredDate,
+                    ShippedDate = m.ShippedDate,
+                    CompanyName = ShipperList.Single(shipperM => shipperM.ShipperID == m.ShipperID).CompanyName
                 }).ToList();
-            return Json(orderList, JsonRequestBehavior.AllowGet);
+            return Json(orderSearchArgsList, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrderUpdatePage() {
+            return View();
         }
     }
 }

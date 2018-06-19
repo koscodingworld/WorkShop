@@ -43,10 +43,10 @@
                 @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
             </td>
             <td class="col-md-2">
-                @Html.LabelFor(model => model.RequireDate, htmlAttributes: new { @class = "control-label" })
+                @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label" })
             </td>
             <td>
-                @Html.TextBoxFor(model => model.RequireDate, new { @class = "form-control", Type = "datetime-local" })
+                @Html.TextBoxFor(model => model.RequiredDate, new { @class = "form-control", Type = "datetime-local" })
                 @Html.ValidationMessageFor(model => model.RequireDate, "", new { @class = "text-danger" })
             </td>
         </tr>

@@ -123,6 +123,9 @@
     </div>
 }
 <script>
-    $('.kendo-dropdownlist').kendoDropDownList();
-    $(".kendo-date").kendoDatePicker();
+    $(document).ready(function () {
+        $('.kendo-dropdownlist').kendoDropDownList();
+        $(".kendo-date").kendoDatePicker();
+        $("form").kendoValidator();
+    });
 </script>

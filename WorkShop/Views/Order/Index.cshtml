@@ -1,94 +1,156 @@
-﻿@model IEnumerable<WorkShop.Models.Orders>
-@{
-    ViewBag.Title = "Index";
-}
-<h2>Index</h2>
-<p>
-    @Html.ActionLink("新增訂單", "OrderInsert", null, new { @class = "btn btn-info" })
-    @Html.ActionLink("查詢訂單資訊", "OrderSearch", null, new { @class = "btn btn-info" })
-</p>
-<table class="table table-bordered" id="kendoGrid"></table>
-<script>
+﻿@model WorkShop.Models.OrderSearchArgs
+    @{
+        ViewBag.Title = "Index";
+        IList<WorkShop.Models.Employees> employeeList = ViewBag.employeeList;
+    }
+    <h2>Index</h2>
+    <form id="searchForm">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <table class="table">
+                <tr>
+                    <td class="col-md-2">
+                        訂單編號
+                    </td>
+                    <td colspan="3">
+                        <input type="text" name="OrderID">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        負責員工
+                    </td>
+                    <td colspan="3">
+                        @Html.DropDownListFor(m => m.EmployeeName, (IEnumerable<SelectListItem>)ViewBag.employeesSelectItemList, new { @class = "form-control kendo-dropdownlist" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-2">
+                        訂購日期
+                    </td>
+                    <td>
+                        <input type="date" class="kendo-date" name="OrderDate">
+                    </td>
+                    <td class="col-md-2">
+                        需要日期
+                    </td>
+                    <td>
+                        <input type="date" class="kendo-date" name="RequiredDate">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        出貨日期
+                    </td>
+                    <td colspan="3">
+                        <input type="date" class="kendo-date" name="ShippedDate">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        出貨公司
+                    </td>
+                    <td colspan="3">
+                        @Html.DropDownListFor(m => m.CompanyName, (IEnumerable<SelectListItem>)ViewBag.shippersSelectItemList, new { @class = "form-control kendo-dropdownlist" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+    <p>
+        @Html.ActionLink("新增訂單", "OrderInsert", null, new { @class = "btn btn-info" })
+        <button id="searchBtn" class="btn btn-info">查詢訂單資訊</button>
+    </p>
+    <table class="table table-bordered" id="kendoGrid"></table>
+    <script>
     $(document).ready(function () {
-        $.ajax({
-            url: '@Url.Action("OrderSearch","Order")',
-            type: 'get',
-            success: function (response) {
-                /*$.each(response, function (index, value) {
-                    if (response[index].OrderDate != null) {
-                        var orderDate = new Date(parseInt(response[index].OrderDate.substr(6)));
-                        response[index].OrderDate = orderDate.format("yyyy-mm-dd HH:MM:ss");
+        $(".kendo-dropdownlist").prepend("<option value='' selected='selected'></option>");
+        $('.kendo-dropdownlist').kendoDropDownList();
+        $(".kendo-date").kendoDatePicker();
+        $("#kendoGrid").kendoGrid({
+            height: 550,
+            pageable: {
+                pageSizes: true
+            },
+            sortable: true,
+            reorderable: true,
+            resizable: true,
+            pageable: true,
+            columns: [{
+                field: "OrderID",
+                title: "訂單編號"
+            },
+            {
+                field: "EmployeeName",
+                title: "員工姓名"
+            },  {
+                field: "OrderDate",
+                title: "訂單日期",
+                template: "#= kendo.toString(kendo.parseDate(OrderDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+            }, {
+                field: "RequiredDate",
+                title: "需要日期",
+                template: "#= kendo.toString(kendo.parseDate(RequiredDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+            }, {
+                field: "ShippedDate",
+                title: "運輸日期",
+                template: "#= kendo.toString(kendo.parseDate(ShippedDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+            }, {
+                field: "CompanyName",
+                title: "出貨公司"
+            }, {
+                command: [
+                    {
+                        name: "編輯",
+                        click: function (e) {
+                            e.preventDefault();
+                            // e.target is the DOM element representing the button
+                            var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                            // get the data bound to the current table row
+                            var data = this.dataItem(tr);
+                            console.log(data.OrderID);
+                            location.href = "./Order"
+                        }
+                    },
+                    {
+                        name: "刪除",
+                        click: function (e) {
+                            e.preventDefault();
+                            // e.target is the DOM element representing the button
+                            var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                            // get the data bound to the current table row
+                            var data = this.dataItem(tr);
+                            console.log(data.OrderID);
+                        }
                     }
-                    if (response[index].RequiredDate != null) {
-                        var requiredDate = new Date(parseInt(response[index].RequiredDate.substr(6)));
-                        response[index].RequiredDate = requiredDate.format("yyyy-mm-dd HH:MM:ss");
-                    }
-                    if (response[index].ShippedDate != null) {
-                        var shippedDate = new Date(parseInt(response[index].ShippedDate.substr(6)));
-                        response[index].ShippedDate = shippedDate.format("yyyy-mm-dd HH:MM:ss");
-                    }
-                });*/
-                $("#kendoGrid").kendoGrid({
-                    dataSource: {
+                ]
+            }]
+        });
+        $('#searchBtn').click(function () {
+            console.log($('#searchForm').serialize());
+            $.ajax({
+                url: '@Url.Action("OrderSearch","Order")',
+                data: $('#searchForm').serialize(),
+                type: 'POST',
+                success: function (response) {
+                    /*var showData = {};
+                    response.forEach(function (v, i) {
+                        v.EmployeeName = 
+                    })*/
+                    var dataSource = new kendo.data.DataSource({
                         type: "json",
                         data: response,
-                          pageSize: 20
-                    },
-                    height: 550,
-                    pageable: {
-                        pageSizes: true
-                    },
-                    sortable: true,
-                    reorderable: true,
-                    resizable: true,
-                    pageable: true,
-                    columns: [{
-                        field: "OrderID",
-                        title: "訂單編號"
-                    }, {
-                        field: "OrderDate",
-                        title: "訂單日期",
-                        template: "#= kendo.toString(kendo.parseDate(OrderDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
-                    }, {
-                        field: "RequiredDate",
-                        title: "需要日期",
-                        template: "#= kendo.toString(kendo.parseDate(RequiredDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
-                    }, {
-                        field: "ShippedDate",
-                        title: "運輸日期",
-                        template: "#= kendo.toString(kendo.parseDate(ShippedDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
-                    }, {
-                        command: [
-                            {
-                                name: "編輯",
-                                click: function (e) {
-                                    e.preventDefault();
-                                    // e.target is the DOM element representing the button
-                                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
-                                    // get the data bound to the current table row
-                                    var data = this.dataItem(tr);
-                                    console.log(data.OrderID);
-                                }
-                            },
-                            {
-                                name: "刪除",
-                                click: function (e) {
-                                    e.preventDefault();
-                                    // e.target is the DOM element representing the button
-                                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
-                                    // get the data bound to the current table row
-                                    var data = this.dataItem(tr);
-                                    console.log(data.OrderID);
-                                }
-                            }
-                        ]
-                    }]
-                })
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        })
+                        pageSize: 10
+                    });
+                    var grid = $("#kendoGrid").data("kendoGrid");
+                    grid.setDataSource(dataSource);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        });
     });
-</script>
+    </script>

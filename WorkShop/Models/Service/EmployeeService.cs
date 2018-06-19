@@ -10,7 +10,7 @@ namespace WorkShop.Models.Service
 {
     public class EmployeeService
     {
-        public DataSet getAllData()
+        public List<Employees> getAllData()
         {
             DaoConnect daoConnect = new DaoConnect();
             SqlConnection conn = daoConnect.SqlConnect();
@@ -18,7 +18,21 @@ namespace WorkShop.Models.Service
             SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
             DataSet dataSet = new DataSet();
             adapter.Fill(dataSet, "Employees");
-            return dataSet;
+            List<Employees> employeesList = dataSet.Tables[0].AsEnumerable().Select(
+                dataRow => new Employees
+                {
+                    EmployeeID = dataRow.Field<int>("EmployeeID"),
+                    LastName = dataRow.Field<String>("LastName"),
+                    FirstName = dataRow.Field<String>("FirstName")
+                }).ToList();
+            return employeesList;
+        }
+        public string GetEmployeeName(int employeeID)
+        {
+            List<Employees> employeeList = this.getAllData();
+            Employees employee = employeeList.SingleOrDefault(m => m.EmployeeID == employeeID);
+
+            return (employee != null) ? employee.FirstName + employee.LastName : null;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace WorkShop.Models.Service
 {
     public class ShipperService
     {
-        public DataSet getAllData()
+        public List<Shippers> getAllData()
         {
             DaoConnect daoConnect = new DaoConnect();
             SqlConnection conn = daoConnect.SqlConnect();
@@ -18,7 +18,22 @@ namespace WorkShop.Models.Service
             SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
             DataSet dataSet = new DataSet();
             adapter.Fill(dataSet, "Shippers");
-            return dataSet;
+            List<Shippers> ShippersList = dataSet.Tables[0].AsEnumerable().Select(
+                dataRow => new Shippers
+                {
+                    ShipperID = dataRow.Field<int>("ShipperID"),
+                    CompanyName = dataRow.Field<String>("CompanyName"),
+                    Phone = dataRow.Field<String>("Phone")
+                }).ToList();
+            return ShippersList;
+        }
+        
+        public string GetCompanyName(int shipperID)
+        {
+            List<Shippers> customers = this.getAllData();
+            Shippers shipper = customers.SingleOrDefault(m => m.ShipperID == shipperID);
+
+            return (shipper != null) ? shipper.CompanyName : null;
         }
     }
 }
