@@ -146,11 +146,14 @@
     <Compile Include="Models\Customers.cs" />
     <Compile Include="Models\Dao\DaoConnect.cs" />
     <Compile Include="Models\Employees.cs" />
+    <Compile Include="Models\OrderDetail.cs" />
     <Compile Include="Models\Orders.cs" />
     <Compile Include="Models\OrderSearchArgs.cs" />
+    <Compile Include="Models\Products.cs" />
     <Compile Include="Models\Service\CustomerService.cs" />
     <Compile Include="Models\Service\EmployeeService.cs" />
     <Compile Include="Models\Service\OrderService.cs" />
+    <Compile Include="Models\Service\ProductsService.cs" />
     <Compile Include="Models\Service\ShipperService.cs" />
     <Compile Include="Models\Shippers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,10 +168,15 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Order\Index.cshtml" />
-    <Content Include="Views\Order\OrderInsert.cshtml" />
+    <Content Include="Views\Order\OrderInsert.cshtml">
+      <BrowseToURL>~/Order/OrderInsert</BrowseToURL>
+    </Content>
     <Content Include="Views\Order\OrderSearch.cshtml" />
     <Content Include="Views\Order\OrderSearchResult.cshtml" />
     <Content Include="Views\Order\OrderUpdatePage.cshtml" />
+    <Content Include="Views\Order\OrderUpdate.cshtml">
+      <BrowseToURL>~/Order/OrderUpdate</BrowseToURL>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

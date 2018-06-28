@@ -1,0 +1,319 @@
+﻿@model WorkShop.Models.Orders
+
+@{
+    ViewBag.Title = "修改訂單";
+    System.Web.Script.Serialization.JavaScriptSerializer oSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Details = oSerializer.Serialize(Model.Details);
+
+}
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("OrderUpdate", "Order", FormMethod.Post,new { id = "form"}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.OrderID)
+        <table class="table">
+            <tr>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.CustomerID, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td colspan="3">
+                    @Html.DropDownListFor(model => model.CustomerID, (IEnumerable<SelectListItem>)ViewBag.customersSelectItemList, new { @class = "form-control kendo-dropdownlist" })
+                    @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.EmployeeID, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td colspan="3">
+                    @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.employeesSelectItemList, new { @class = "form-control kendo-dropdownlist" })
+                    @Html.ValidationMessageFor(model => model.EmployeeID, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td class="col-md-4">
+                    @Html.TextBoxFor(model => model.OrderDate, new { @class = "form-control kendo-date required" })
+                    @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="OrderDate" role="alert"></span>
+                </td>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td class="col-md-4">
+                    @Html.TextBoxFor(model => model.RequiredDate, new { @class = "form-control kendo-date required" })
+                    @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="RequiredDate" role="alert"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ShippedDate, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td colspan="3">
+                    @Html.TextBoxFor(model => model.ShippedDate, new { @class = "form-control kendo-date required" })
+                    @Html.ValidationMessageFor(model => model.ShippedDate, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="ShippedDate" role="alert"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ShipperID, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td colspan="3">
+                    @Html.DropDownListFor(model => model.ShipperID, (IEnumerable<SelectListItem>)ViewBag.shippersSelectItemList, new { @class = "form-control kendo-dropdownlist" })
+                    @Html.ValidationMessageFor(model => model.ShipperID, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Freight, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td colspan="3">
+                    @Html.TextBoxFor(model => model.Freight, new { @class = "form-control k-textbox required", Type = "number" })
+                    @Html.ValidationMessageFor(model => model.Freight, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="Freight" role="alert"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.ShipCountry, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ShipCountry, new { @class = "form-control k-textbox required" })
+                    @Html.ValidationMessageFor(model => model.ShipCountry, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="ShipCountry" role="alert"></span>
+                </td>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.ShipCity, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ShipCity, new { @class = "form-control k-textbox required" })
+                    @Html.ValidationMessageFor(model => model.ShipCity, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="ShipCity" role="alert"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.ShipRegion, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ShipRegion, new { @class = "form-control k-textbox" })
+                    @Html.ValidationMessageFor(model => model.ShipRegion, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="ShipRegion" role="alert"></span>
+                </td>
+                <td class="col-md-2">
+                    @Html.LabelFor(model => model.ShipPostalCode, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ShipPostalCode, new { @class = "form-control k-textbox" })
+                    @Html.ValidationMessageFor(model => model.ShipPostalCode, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="ShipPostalCode" role="alert"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ShipAddress, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td colspan="3">
+                    @Html.TextBoxFor(model => model.ShipAddress, new { @class = "form-control k-textbox required" })
+                    @Html.ValidationMessageFor(model => model.ShipAddress, "", new { @class = "text-danger" })
+                    <span class="k-widget k-invalid-msg" data-for="ShipAddress" role="alert"></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="3">
+                    <input type="button" id="form-submit" value="儲存" class="btn btn-info" />
+                    <a href="./Index" class="btn btn-info">返回首頁</a>
+                </td>
+            </tr>
+        </table>
+        <div id="orderDetailGrid"></div>
+    </div>
+}
+    <script>
+    $(document).ready(function () {
+        var productDictionary = [];
+        $.ajax({
+            url: '@Url.Action("GetProductData", "Order")',
+            async: false,
+            type: 'POST',
+            success: function (response) {
+                productDictionary = response;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+        function DropDownListEditor(container, options) {
+            $('<input data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    dataTextField: "ProductName",
+                    dataValueField: "ProductID",
+                    dataSource: productDictionary
+                });
+        }
+        $('.kendo-dropdownlist').kendoDropDownList();
+        $(".kendo-date").kendoDatePicker(
+            {
+                format: "yyyy/MM/dd"
+            }
+        );
+
+        $("form").kendoValidator({
+            rules: {
+                customRule1: function (input) {
+                    console.log(input);
+                    if (input.hasClass("required")) {
+                        return input.val() !== "";
+                    } else {
+                        return true;
+                    }
+
+                }
+            },
+            messages: {
+                customRule1: "此欄為必填"
+            }
+        });
+        $("#orderDetailGrid").kendoGrid({
+            dataSource: {
+                data: @Html.Raw(Details),
+                autoSync: true,
+                schema: {
+                    model: {
+                        fields: {
+                            ProductID: {
+                                type: "String"
+                            },
+                            UnitPrice: {
+                                type: "number",
+                                editable: false
+                            },
+                            Qty: {
+                                type: "number"
+                            },
+                            Count: {
+                                editable: false
+                            }
+                        },
+                        getProductName: function () {
+                            var productID = this.get("ProductID");
+                            var tmpProductName = "";
+                            var tmpUnitPrice = 0;
+                            console.log(productDictionary);
+                            productDictionary.forEach(function (v, i) {
+                                if (productDictionary[i].ProductID == productID) {
+                                    tmpProductName = productDictionary[i].ProductName;
+                                    tmpUnitPrice = productDictionary[i].UnitPrice;
+                                }
+                            });
+                            this.UnitPrice = tmpUnitPrice;
+                            return tmpProductName;
+                        },
+                        total: function () {
+                            return this.get("UnitPrice") * this.get("Qty");
+                        }
+                    }
+                }
+            },
+            height: 550,
+            pageable: {
+                pageSizes: true
+            },
+            toolbar: [
+                {
+                    name: "create",
+                    template: "<a role='button' class='k-button addGridRow'><span class='k-icon k-i-plus'></span>新增商品</a>"
+                }
+            ],
+            pageSize: 10,
+            sortable: true,
+            reorderable: true,
+            resizable: true,
+            pageable: true,
+            editable: true,
+            columns: [
+                {
+                    field: "ProductID",
+                    title: "商品名稱",
+                    editor: DropDownListEditor,
+                    template: "#= getProductName() #"
+                },
+                {
+                    field: "UnitPrice",
+                    title: "單價"
+                    
+                }, {
+                    field: "Qty",
+                    title: "數量"
+                }, {
+                    field: "Count",
+                    title: "小計",
+                    template: "#= total() #"
+                }, {
+                    command: [
+                        {
+                            name: "刪除",
+                            click: function (e) {
+                                e.preventDefault();
+                                var tr = $(e.target).closest("tr");
+                                var dataItem = this.dataItem(tr);
+                                var dataSource = $("#orderDetailGrid").data("kendoGrid").dataSource;
+                                dataSource.remove(dataItem);
+                            }
+                        }
+                    ]
+                }]
+        });
+        $('.addGridRow').click(function (e) {
+            var dataSource = $("#orderDetailGrid").data("kendoGrid").dataSource;
+            dataSource.insert({ "ProductID": productDictionary[0].ProductID, "UnitPrice": productDictionary[0].UnitPrice, "Qty": "1" });
+        });
+        
+        $('#form-submit').click(function () {
+            var productArray = [];
+            var gridData = $("#orderDetailGrid").data("kendoGrid").dataSource.data();
+            gridData.forEach(function (v, i) {
+                var object = {
+                    ProductID: gridData[i].ProductID,
+                    UnitPrice: gridData[i].UnitPrice,
+                    Qty: gridData[i].Qty
+                };
+                productArray.push(object);
+            });
+            var form_data = {};
+            $('#form').serializeArray().forEach(function (v,i) {
+                form_data[v.name] = v.value;
+            })
+            form_data.Details = productArray;
+            console.log(form_data);
+            
+            $.ajax({
+                url: '@Url.Action("OrderUpdate", "Order")',
+                type: 'POST',
+                dataType: "json",
+                data: form_data,
+                success: function (response) {
+                    var OrderID = response;
+                    alert("訂單編號：" + OrderID + "已儲存成功");
+                    location.href = "./Index";
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+            
+        });
+    });
+    
+    </script>

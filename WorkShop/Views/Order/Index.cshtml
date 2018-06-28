@@ -87,15 +87,15 @@
             },  {
                 field: "OrderDate",
                 title: "訂單日期",
-                template: "#= kendo.toString(kendo.parseDate(OrderDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+                template: "#= kendo.toString(kendo.parseDate(OrderDate, 'yyyy-MM-dd'), 'yyyy/MM/dd') #"
             }, {
                 field: "RequiredDate",
                 title: "需要日期",
-                template: "#= kendo.toString(kendo.parseDate(RequiredDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+                template: "#= kendo.toString(kendo.parseDate(RequiredDate, 'yyyy-MM-dd'), 'yyyy/MM/dd') #"
             }, {
                 field: "ShippedDate",
                 title: "運輸日期",
-                template: "#= kendo.toString(kendo.parseDate(ShippedDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+                template: "#= kendo.toString(kendo.parseDate(ShippedDate, 'yyyy-MM-dd'), 'yyyy/MM/dd') #"
             }, {
                 field: "CompanyName",
                 title: "出貨公司"
@@ -109,8 +109,7 @@
                             var tr = $(e.target).closest("tr"); // get the current table row (tr)
                             // get the data bound to the current table row
                             var data = this.dataItem(tr);
-                            console.log(data.OrderID);
-                            location.href = "./Order"
+                            location.href = "./OrderUpdate?OrderID=" + data.OrderID;
                         }
                     },
                     {
@@ -121,23 +120,32 @@
                             var tr = $(e.target).closest("tr"); // get the current table row (tr)
                             // get the data bound to the current table row
                             var data = this.dataItem(tr);
-                            console.log(data.OrderID);
+                            if (confirm('確定要刪除訂單編號：' + data.OrderID)) {
+                                $.ajax({
+                                    url: '@Url.Action("OrderDelete", "Order")',
+                                    data: { "OrderID": data.OrderID},
+                                    type: 'POST',
+                                    success: function (response) {
+                                        alert('訂單編號：' + response + '已刪除');
+                                        location.href = "./Index";
+                                    },
+                                    error: function (xhr, ajaxOptions, thrownError) {
+                                        alert(xhr.status);
+                                        alert(thrownError);
+                                    }
+                                });
+                            }
                         }
                     }
                 ]
             }]
         });
         $('#searchBtn').click(function () {
-            console.log($('#searchForm').serialize());
             $.ajax({
                 url: '@Url.Action("OrderSearch","Order")',
                 data: $('#searchForm').serialize(),
                 type: 'POST',
                 success: function (response) {
-                    /*var showData = {};
-                    response.forEach(function (v, i) {
-                        v.EmployeeName = 
-                    })*/
                     var dataSource = new kendo.data.DataSource({
                         type: "json",
                         data: response,

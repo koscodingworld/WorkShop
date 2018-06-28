@@ -77,13 +77,79 @@ namespace WorkShop.Controllers
             return View(new Orders());
         }
         [HttpPost]
-        public ActionResult OrderInsert(Orders orderInsertArgs)
+        public JsonResult OrderInsert(Orders orderInsertArgs)
         {
+            int OrderId = 0 ;
             if (ModelState.IsValid) {
-
+                OrderService orderService = new OrderService();
+                OrderId = orderService.InsertOrderReturnNewOrderId(orderInsertArgs);
             }
-            return RedirectToAction("Index");
+            return Json(OrderId,JsonRequestBehavior.AllowGet) ;
         }
+
+        //修改頁面
+        [HttpGet]
+        public ActionResult OrderUpdate(int OrderID)
+        {
+            CustomerService customerService = new CustomerService();
+            List<Customers> customersList = customerService.getAllData();
+            List<SelectListItem> customersSelectItemList = customersList.Select(
+                m => new SelectListItem()
+                {
+                    Text = m.CompanyName,
+                    Value = "" + m.CustomerID
+                }).ToList();
+            ViewBag.customersSelectItemList = customersSelectItemList;
+
+            EmployeeService employeeService = new EmployeeService();
+            List<Employees> employeesList = employeeService.getAllData();
+            List<SelectListItem> employeesSelectItemList = employeesList.Select(
+                m => new SelectListItem()
+                {
+                    Text = m.FirstName + m.LastName,
+                    Value = "" + m.EmployeeID
+                }).ToList();
+            ViewBag.employeesSelectItemList = employeesSelectItemList;
+
+            ShipperService shipperService = new ShipperService();
+            List<Shippers> shippersList = shipperService.getAllData();
+            List<SelectListItem> shippersSelectItemList = shippersList.Select(
+                m => new SelectListItem()
+                {
+                    Text = m.CompanyName,
+                    Value = "" + m.ShipperID
+                }).ToList();
+            ViewBag.shippersSelectItemList = shippersSelectItemList;
+            OrderService orderService = new OrderService();
+            Orders orderData = orderService.getOrderById(OrderID);
+            return View(orderData);
+        }
+        [HttpPost]
+        public JsonResult OrderUpdate(Orders oldOrder) {
+            int OrderId = 0;
+            if (ModelState.IsValid)
+            {
+                OrderService orderService = new OrderService();
+                OrderId = orderService.UpdateOrder(oldOrder);
+            }
+            return Json(OrderId, JsonRequestBehavior.AllowGet);
+            
+        }
+        //刪除頁面
+        [HttpPost]
+        public JsonResult OrderDelete(int OrderID)
+        {
+            int OrderId = 0;
+            if (ModelState.IsValid)
+            {
+                OrderService orderService = new OrderService();
+                OrderId = orderService.DeleteOrder(OrderID);
+            }
+            return Json(OrderId, JsonRequestBehavior.AllowGet);
+
+        }
+        //JsonResult
+        //查詢頁面
         [HttpPost]
         public JsonResult OrderSearch(OrderSearchArgs orderSearchArgs) {
             OrderService orderService = new OrderService();
@@ -143,9 +209,12 @@ namespace WorkShop.Controllers
                 }).ToList();
             return Json(orderSearchArgsList, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult OrderUpdatePage() {
-            return View();
+        //取得商品資訊
+        [HttpPost]
+        public JsonResult GetProductData() {
+            ProductsService productsService = new ProductsService();
+            List<Products> productsList = productsService.getAllData();
+            return Json(productsList, JsonRequestBehavior.AllowGet);
         }
     }
 }
